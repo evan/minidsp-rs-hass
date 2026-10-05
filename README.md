@@ -2,7 +2,8 @@
 
 needs minidsp rs instance with http server
 
-to configure, you need to prefix your MiniDSP-RS Host with `ws://`, for example `ws://192.168.2.151`
+to configure, enter the address of minidspd's HTTP server with the `ws://` prefix and the port
+(5380 unless you changed `bind_address` in minidspd's config), for example `ws://192.168.1.50:5380`
 
 ## Options
 
