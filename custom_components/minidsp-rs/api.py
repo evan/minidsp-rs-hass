@@ -91,9 +91,14 @@ class MiniDSPAPI:
 
     async def async_disconnect(self) -> None:
         """Cancel the websocket task (if any)."""
+        self._stop_event.set()
         if self._ws_task and not self._ws_task.done():
-            self._stop_event.set()
-            await self._ws_task
+            # Cancel instead of waiting for the task to notice the stop event: it only
+            # checks it between connections, and with level/status polling off the
+            # socket can stay silent until the heartbeat gives up (~45 s), stalling
+            # unload/reload. Cancelling a pending receive closes the socket right away.
+            self._ws_task.cancel()
+            await asyncio.wait([self._ws_task])
 
     # ---------------------------------------------------------------------
 
